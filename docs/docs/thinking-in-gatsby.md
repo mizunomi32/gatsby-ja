@@ -1,5 +1,5 @@
 ---
-title: Thinking in Gatsby
+title: Gatsby の思想
 ---
 
-Coming soon.
+近日公開.
