@@ -1,20 +1,20 @@
 ---
-title: Shadowing in Gatsby Themes
+title: Gatsbyのテーマにおけるシャドウイング
 ---
 
-Gatsby themes introduce a concept called "shadowing". This feature allows users to replace a file in the `src` directory that is included in the webpack bundle with their own implementation. This works for React components, pages in `src/pages`, JSON files, TypeScript files, as well as any other imported file (such as `.css`) in your site.
+Gatsbyのテーマにはシャドウイングの概念が導入されています。この機能を使うことで、webpackバンドル内の`src`ディレクトリに含まれるファイルを独自の実装に置き換えが可能となります。 これは、Reactのコンポーネントや`src/pages`のページ、JSONファイル、TypeScriptファイル、他のインポートされたファイル（`.css`など）に対して使うことができます。
 
-A practical use case is when you've installed `gatsby-theme-blog` and want to customize the author `Bio` component to add your own biographical content. Shadowing lets you replace the theme’s original file, `gatsby-theme-blog/src/components/bio.js`, with your own file to make any changes you need.
+実用的な使用例として、`gatsby-theme-blog`をインストールし、著者の`Bio`コンポーネントをカスタマイズして独自の経歴コンテンツを追加したい場合を取り上げます。シャドウイングを使うと、テーマの元のファイル`gatsby-theme-blog/src/components/bio.js`を独自のファイルに置き換えて、必要な変更を加えることができます。
 
-## Shadowing example
+## シャドウイングの例
 
-If you’ve installed `gatsby-theme-blog` you’ll notice that it renders a `Bio` component which is used in the `BlogPost` template. If you’d like to change the `Bio` component you can do so with the shadowing API.
+`gatsby-theme-blog`をインストールした場合は、`BlogPost`テンプレートで使われる`Bio`コンポーネントがレンダリングされることに気付くと思います。この`Bio`コンポーネントを変更したいときは、シャドウイングAPIを使うことで変更できます。
 
-### Theme file structure
+### テーマファイルの構造
 
-You can inspect `gatsby-theme-blog`'s file structure to determine the file path for the file you want to shadow.
+`gatsby-theme-blog`のファイル構造を調べて、シャドウイングをするファイルのファイルパスを見つけることができます。
 
-```text:title="tree gatsby-theme-blog"
+```text:title="gatsby-theme-blogの構造"
 ├── gatsby-config.js
 ├── gatsby-node.js
 └── src
@@ -42,22 +42,24 @@ You can inspect `gatsby-theme-blog`'s file structure to determine the file path 
         └── posts.js
 ```
 
-### Customizing the `Bio` component
+### `Bio`コンポーネントのカスタマイズ
 
-In this case, the file to shadow is `gatsby-theme-blog/src/components/bio.js`.
+ここでは`gatsby-theme-blog/src/components/bio.js`をシャドウイングするケースを取りあげます。
 
-The shadowing API uses a deterministic file structure to determine which component will be rendered. In order to override the `Bio` component in `gatsby-theme-blog`, create a file named `user-site/src/gatsby-theme-blog/components/bio.js`.
+シャドウイングAPIは、決定的なファイル構造を使用して、レンダリングされるコンポーネントを決定します。そこで、`gatsby-theme-blog`の`Bio`コンポーネントを上書きするには、`user-site/src/gatsby-theme-blog/components/bio.js`という名前のファイルを作成します。
 
-Any file that lives in the `src/gatsby-theme-blog` directory of the user’s site will be used instead of a file with the same name located in the theme’s src directory: `gatsby-theme-blog/src`. This replaces the entire file: to re-use parts of the original file from the theme such as functionality or styling, check out the sections of this doc on [extending](#extending-shadowed-files) and [importing](#importing-the-shadowed-component) shadowed files.
+テーマの`src`ディレクトリである`gatsby-theme-blog/src`ディレクトリにある同じ名前のファイルのかわり、ユーザーのサイトの`src/gatsby-theme-blog`ディレクトリにあるファイルが使われます。
+これによって、該当のファイル全体が置き換えられます。
+機能やスタイルなど、テーマの元のファイルの一部を再利用したいときは、シャドウファイルの[拡張](#extending-shadowed-files)と[インポート](#importing-the-shadowed-component)に関するこのドキュメントのセクションを確認してください。
 
-This means that `user-site/src/gatsby-theme-blog/components/bio.js` will be rendered in place of `gatsby-theme-blog/src/components/bio.js`:
+ここでは、`gatsby-theme-blog/src/components/bio.js`の代わりに`user-site/src/gatsby-theme-blog/components/bio.js`がレンダリングされます。
 
 ```jsx:title=src/gatsby-theme-blog/components/bio.js
 import React from "react"
 export default () => <h1>My new bio component!</h1>
 ```
 
-A successful shadow of the Bio component will result in the following directory tree:
+Bioコンポーネントのシャドウイングをおこなうと、次のディレクトリツリーが作成されます。
 
 ```text
 user-site
@@ -67,11 +69,11 @@ user-site
             └── bio.js // highlight-line
 ```
 
-## Shadowing other themes
+## 他のテーマに対してシャドウイングする
 
-Some themes, including `gatsby-theme-blog`, install other themes. `gatsby-theme-blog` uses `gatsby-plugin-theme-ui`. If you want to customize the implementation of any theme you can do so with shadowing.
+`gatsby-theme-blog`を含むいくつかのテーマは、内部で他のテーマを利用しています。たとえば、`gatsby-theme-blog`では`gatsby-plugin-theme-ui`を使用します。このテーマの実装をカスタマイズしたい場合も、シャドウイングを使うことでカスタマイズできます。
 
-For example, to shadow `index.js` from `gatsby-plugin-theme-ui`, create a file named `user-site/src/gatsby-plugin-theme-ui/index.js`.
+たとえば、`gatsby-plugin-theme-ui`から`index.js`をシャドウイングするには、`user-site/src/gatsby-plugin-theme-ui/index.js`という名前のファイルを作成します。
 
 ```js:title=src/gatsby-plugin-theme-ui/index.js
 import baseTheme from "gatsby-theme-blog/src/gatsby-plugin-theme-ui/index"
@@ -87,7 +89,7 @@ export default {
 }
 ```
 
-Which will result in the following directory tree:
+このときは、次のディレクトリツリーが作成されます。
 
 ```text
 user-site
@@ -96,9 +98,9 @@ user-site
         └──index.js // highlight-line
 ```
 
-## Any source file is shadowable
+## 全ファイルに対してシャドウイング可能
 
-The shadowing API isn’t restricted to React components; you can override any JavaScript, Markdown, MDX, or CSS file in the `src` directory. This gives you fine-grained control of all functionality, content, and styling that a theme provides.
+シャドウイングAPIはReactコンポーネントのみに制限されていません。`src`ディレクトリにあるJavaScriptファイルやMarkdownファイル、MDXファイル、CSSファイルといったファイルに対しても上書き可能です。これによって、テーマが提供するすべての機能やコンテンツ、スタイルをきめ細かく制御できます。
 
 If you wanted to shadow a CSS file in `gatsby-theme-awesome-css` that's found at `src/styles/bio.css` you can do so by creating `user-site/src/gatsby-theme-awesome-css/styles/bio.css`
 
